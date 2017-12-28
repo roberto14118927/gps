@@ -1,0 +1,50 @@
+{% load staticfiles %}
+<!-- COMMON SCRIPTS -->
+
+
+<!-- SPECIFIC SCRIPTS -->
+
+
+	
+<!-- /Header -->
+<script src="{% static 'js/jquery-2.2.4.min.js' %}"></script>
+<script src="{% static 'js/common_scripts.min.js' %}"></script>
+<script src="{% static 'js/functions.js' %} ">
+</script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<!--<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_LWerl_KKlujPhPZjAFuMZjZj8_vMSzg&callback=initMap"> </script>-->
+<script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_LWerl_KKlujPhPZjAFuMZjZj8_vMSzg&callback=init"> </script>
+<script src="http://192.168.1.71:5678/socket.io/socket.io.js"></script>
+{% load staticfiles %}
+<script src="{% static 'js/client.js' %}"></script>
+
+<script>
+  var map;
+
+  function init(){
+      var uluru = {lat:16.768099, lng:-93.0854785};
+      map = new google.maps.Map(document.getElementById('map'), {
+      zoom:8,
+      center: uluru
+    });
+  }
+
+  function initMap(latin, lngin, zin) {
+    var uluru = {lat:latin, lng:lngin};
+
+    var marker = new google.maps.Marker({
+      position: uluru,
+      map: map,
+      draggable: true,
+	  title: 'Arrastrame'
+    });
+
+    map.setZoom(zin);
+    map.panTo(marker.position);
+
+    google.maps.event.addListener(marker, 'position_changed', function(){
+			getMarkerCoords(marker)
+	});
+  }
+</script>
+
+
