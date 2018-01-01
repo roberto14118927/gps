@@ -85,6 +85,9 @@ WSGI_APPLICATION = 'gpsupgch.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE' : 'django.db.backends.mysql',
+        'OPTIONS': {
+            'sql_mode': 'traditional',
+        },
         'NAME' : 'gpsdb',
         'USER': 'root',
         'PASSWORD': '',

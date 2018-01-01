@@ -14,78 +14,41 @@
 	{#Aqui colocaremos los scripts#}
 	
 {% endblock %}
-<!-- scripts fin -->
-
-
-
 <!-- content inicio -->
 
 {% block content %}
-	{#Aqui colocaremos los proyectos recientes#}
-	<!--<div id="map">
-		
-	</div>-->
-		<div class="container-fluid full-height">
+	<div class="container-fluid full-height">
 		<div class="row row-height">
 			<div class="col-lg-4 content-left">
-				<form>
-					<!--<div class="search_bar_wrapper">
-						<div class="search_bar_list">
-							<input type="text" class="form-control" placeholder="Ex. Specialist, Name, Doctor...">
-							<input type="submit" value="Search">
-						</div>
+				<br/>
+				{% for gps in gpsus %} 
+					
+					<div class="strip_list">
+						<!--<a href="#0" class="wish_bt"></a>-->
+						<figure>
+							<a href="javascript:call_imei({{ gps.imei }});"><img src="http://via.placeholder.com/565x565.jpg" alt=""></a>
+						</figure>
+						<small>UPGCH</small>
+						<h11>NOMBRE: {{ gps.cmp_nombre }}</h11>
+						<br/>
+						<h11>UNIDAD: {{ gps.cmp_unidad }}</h11>
+						<p></p>
 					</div>
-					<div class="filters_listing map_listing">
-						<ul class="clearfix">
-							<li>
-								<h6>Type</h6>
-								<div class="switch-field">
-									<input type="radio" id="all" name="type_patient" value="all" checked>
-									<label for="all">All</label>
-									<input type="radio" id="doctors" name="type_patient" value="doctors">
-									<label for="doctors">Doctors</label>
-									<input type="radio" id="clinics" name="type_patient" value="clinics">
-									<label for="clinics">Clinics</label>
-								</div>
-							</li>
-							<li>
-								<h6>Layout</h6>
-								<div class="layout_view">
-									<a href="grid-list.html"><i class="icon-th"></i></a>
-									<a href="list.html"><i class="icon-th-list"></i></a>
-									<a href="#0" class="active"><i class="icon-map-1"></i></a>
-								</div>
-							</li>
-							<li>
-								<h6>Sort by</h6>
-								<select name="orderby" class="selectbox">
-								<option value="Closest">Closest</option>
-								<option value="Best rated">Best rated</option>
-								<option value="Men">Men</option>
-								<option value="Women">Women</option>
-								</select>
-							</li>
-						</ul>
-					</div>-->
-					<!-- /filters -->
-				</form>
-				<hr/>
-				<div class="strip_list">
-					<!--<a href="#0" class="wish_bt"></a>-->
-					<figure>
-						<a href="detail-page.html"><img src="http://via.placeholder.com/565x565.jpg" alt=""></a>
-					</figure>
-					<small>Psicologist</small>
-					<h3>Dr. Butcher</h3>
-					<p></p>
-					<a href="badges.html" data-toggle="tooltip" data-placement="top" data-original-title="Badge Level" class="badge_list_1"><img src="img/badges/badge_1.svg" width="15" height="15" alt=""></a>
-					<ul>
-						<li><a href="#0" onclick="onHtmlClick('Doctors', 0)" class="btn_listing">Ver en mapa</a></li>
-						<li></li>
-						<li></li>
-					</ul>
-				</div>
+					<hr/>
+			    {% endfor %}			
 				<!-- /strip_list -->
+				<div class="box_badges">
+					<div id="datos">
+						
+					</div>
+						<!--<div id="badge_level_2" class="disabled_badge"><img src="img/badges/badge_2.svg" alt="" width="100" height="100"><i class="icon-lock"></i></div>
+						<h3>User level 2</h3>
+						<p>Lorem ipsum dolor sit amet, pro id zril molestie, cum ne omittam quaestio. Pri delectus conclusionemque te.</p>
+						<ul>
+							<li><i class="icon-eye-7"></i>54 Views</li>
+							<li><i class="icon-users-1"></i>24 Patients</li>
+						</ul>-->
+				</div>
 			</div>
 			<!-- /content-left-->
 

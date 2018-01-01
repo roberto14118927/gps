@@ -5,8 +5,8 @@ from django.db import models
 import datetime
 
 # Create your models here.
-class Gpsusuario(models.Model):
-	id_gpsu = models.AutoField(primary_key = True)
+class Gpsus(models.Model):
+	id_gpsus = models.AutoField(primary_key=True)
 	id_user = models.IntegerField(null=True, default=0)
 	imei = models.CharField(max_length=255, blank=True, null=True)
 	cmp_nombre = models.CharField(max_length=255, blank=True, null=True)
@@ -17,9 +17,20 @@ class Gpsusuario(models.Model):
 		return self.imei
 
 class Gpson(models.Model):
-	id_gps = models.AutoField(primary_key = True)
-	id_user = models.ForeignKey(Gpsusuario)
+	id_gpson = models.AutoField(primary_key = True)
+	id_user = models.ForeignKey(Gpsus, on_delete=models.CASCADE)
 	imei = models.CharField(max_length=255, blank=True, null=True)
+	date_create = models.DateTimeField(default=datetime.date.today)
+
+	def __str__(self):
+		return self.imei
+
+class Gpsub(models.Model):
+	id_gpsub = models.AutoField(primary_key = True)
+	imei = models.CharField(max_length=255, blank=True, null=True)
+	latit = models.CharField(max_length=255, blank=True, null=True)
+	longi = models.CharField(max_length=255, blank=True, null=True)
+	combu = models.CharField(max_length=255, blank=True, null=True)
 	date_create = models.DateTimeField(default=datetime.date.today)
 
 	def __str__(self):

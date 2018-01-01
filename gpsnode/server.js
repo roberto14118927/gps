@@ -34,6 +34,10 @@ io.on('connection', function(socket) {
       });*/
 });
 
+io.on('error',function(err){ 
+  console.error(err)
+});
+
 server.listen(3000, function(){
   console.log("Servidor corriendo puerto 3000")
 });
@@ -46,58 +50,63 @@ net.createServer(function(sock) {
         var dataclean = getCleanedString(strin);
         console.log(dataclean)
         arr = dataclean.toString().split(",");
-        //arr1 = dataclean.toString().split(" ",20);
-        //console.log(arr1);
         var veri = arr[1];
-        if(veri == "verifica"){
-            var imei = arr[2];
-            var id_user = arr[3];
-            var records1;
-             inserta = [
-              [id_user, imei]
-            ];
-              conmysql.query('INSERT INTO `gps_gpson` (`id_user`, `imei`) VALUES ? ',[inserta], function (err, result) {
-                if (err) throw err;
-                console.log("1 registro agregado ");
-              });
+        console.log(arr[3]);
+        if (typeof arr[3] !== null) {
+            if(veri == "verifica"){
+                var imei = arr[2];
+                var id_user = arr[3];
+                var records1;
+                 inserta = [
+                  [id_user, imei]
+                ];
+                  conmysql.query('INSERT INTO `gps_gpson` (`id_user`, `imei`) VALUES ? ',[inserta], function (err, result) {
+                    if (err) throw err;
+                    console.log("1 registro agregado ");
+                  });
 
-        }else{
-          var imei = arr[3];
-          var latitud = arr[10];
-          var longitud = arr[12];
-          latitud = String(latitud);
-          var inicio = latitud.substring(0, 2);
-          var fin = latitud.substring(2, 8);
-          var mm = (fin/10000);
-          mm = (mm/60);
-          var dd = inicio;
-          var latitudgps = (parseInt(dd) + parseFloat(mm));
-          latitudgps = String(latitudgps);
-          latitudgps = latitudgps.substring(0, 10);
-          latitudgps = latitudgps * 1
-          //latitudgps = String(latitudgps);
-          //--------------------------------------------------------------
-          longitud = String(longitud);
-          var inicio1 = longitud.substring(0, 3);
-          var fin1 = longitud.substring(3, 9);
-          var mm1 = (fin1/10000);
-          mm1 = (mm1/60);
-          var dd1 = inicio1;
-          var longitudgps = (parseInt(dd1) + parseFloat(mm1));
-          longitudgps = String(longitudgps);
-          longitudgps = longitudgps.substring(0, 10);
-          longitudgps = (longitudgps*-1);
-          //longitudgps = String(longitudgps);
-          //--------------------------------------------------------------
-          //if(latitudgps != 0 && longitudgps!= 0) {
-            io.emit('datosgps', {
-            	latit:latitudgps,
-            	longi:longitudgps,
-              zoom:16,
-              imei:imei
-            });
-          //}
-            
+            }else{
+              var imei = arr[3];
+              imei = imei.replace(" ", "");
+              var latitud = arr[10];
+              var longitud = arr[12];
+              latitud = String(latitud);
+              var inicio = latitud.substring(0, 2);
+              var fin = latitud.substring(2, 8);
+              var mm = (fin/10000);
+              mm = (mm/60);
+              var dd = inicio;
+              var latitudgps = (parseInt(dd) + parseFloat(mm));
+              latitudgps = String(latitudgps);
+              latitudgps = latitudgps.substring(0, 10);
+              latitudgps = latitudgps * 1
+              //latitudgps = String(latitudgps);
+              //--------------------------------------------------------------
+              longitud = String(longitud);
+              var inicio1 = longitud.substring(0, 3);
+              var fin1 = longitud.substring(3, 9);
+              var mm1 = (fin1/10000);
+              mm1 = (mm1/60);
+              var dd1 = inicio1;
+              var longitudgps = (parseInt(dd1) + parseFloat(mm1));
+              longitudgps = String(longitudgps);
+              longitudgps = longitudgps.substring(0, 10);
+              longitudgps = (longitudgps*-1);
+              //longitudgps = String(longitudgps);
+              //--------------------------------------------------------------
+              insertaubi = [
+                  [String(imei), String(latitudgps), String(longitudgps), 0]
+              ];    
+              conmysql.query('INSERT INTO `gps_gpsub` (`imei`, `latit`, `longi`, `combu`) VALUES ? ',[insertaubi], function (err, result) {
+                 if (err) throw err;
+                   io.emit('datosgps', {
+                    latit:latitudgps,
+                    longi:longitudgps,
+                    zoom:16,
+                    imei:imei
+                  });
+               });               
+            }
         }      
     });
     
@@ -133,56 +142,4 @@ function getCleanedString(cadena){
    return cadena;
 }
 
-
-
- /*var udpPort = 3000;
- var url = require ('url');
- var udp = require ('dgram');
- var http = require ('http');
- var request = require ('request');
- var udpServer = udp.createSocket ('udp4').bind (3000, '10.10.2.189');
- 
- udpServer.on ('close', function (err) {
-     console.log ("UDP close");
- });
- 
- udpServer.on ('error', function (err) {
-     console.log ("UDP Error: " + err.toString ());
- });
- 
- udpServer.on ('message', function (data, port) {
-     console.log ("UDP received");
- });
- 
- udpServer.on ('listening', function () {
-     var address = udpServer.address ();
-     console.log ("UDP Listening On IP: " + address.address + " at Port: " + address.port);
- });
-
-  module.exports = function (){
-     this.send = function (objectID, script, action, variables){
- 
-     }
- }*/
-
-/*module.exports = require('dgram');
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
-
-server.on('error', (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
-});
-
-server.on('message', (msg, rinfo) => {
-  console.log("ok");
-  console.log(`server got: ${msg} from ${rinfo.address}:${rinfo.port}`);
-});
-
-server.on('listening', () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
-});
-
-server.bind(PORT, HOST);*/
 

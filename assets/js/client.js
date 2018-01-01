@@ -8,21 +8,22 @@ var URL = 'http://192.168.1.71:5678';
 
   socket.on('datosgps', function(data){
     //render(data);
-    console.log(data);
+    //console.log(data);
     initMap(data.latit,data.longi,data.zoom);
+    render(data);
   });
 
   function render (data) {
-  var html = `<div>
+  /*var html = `<div>
               <strong>Latitud</strong>:
               <em>${data.latit}</em>
             </div>
             <div>
               <strong>Longitud</strong>:
               <em>${data.longi}</em>
-            </div>`;
-
-  document.getElementById('coordenadas').innerHTML = html;
+            </div>`;*/
+  var html = `<h11>LATITUD: ${data.latit}</h11> <br/> <h11>LONGITUD: ${data.longi} </h11>`;
+  document.getElementById('datos').innerHTML = html;
 }
 
 
