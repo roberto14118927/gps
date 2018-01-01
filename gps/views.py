@@ -9,9 +9,9 @@ from django.core import serializers
 class BusquedaAjaxView(TemplateView):
 	def get(self, request, *args, **kwargs):
 		imei_get = request.GET['imei']
-		datosout = Gpsub.objects.filter(imei__exact = imei_get)
+		datosout = Gpsub.objects.filter(imei__exact = imei_get).order_by('-date_create')
 		data = serializers.serialize('json',datosout, 
-			fields=('latit', 'longi', 'combu'))
+			fields=('imei', 'latit', 'longi', 'combu','date_create'))
 		return HttpResponse(data, content_type='application/json')
 
 

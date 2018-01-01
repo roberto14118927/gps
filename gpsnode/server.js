@@ -9,12 +9,12 @@ var io = require('socket.io')(server);
 
 app.use(express.static('static/js'))
 const web_sockets = []
-//var HOST = '192.168.1.71';'
 var HOST = '192.168.1.71'
 var PORT = 3000;
 server.listen(5678);
 var arr;
 var arr1;
+var global_imei="";
 
 var conmysql= mysql.createConnection({
   host: "localhost",
@@ -26,13 +26,15 @@ var conmysql= mysql.createConnection({
 
 
 io.on('connection', function(socket) {
-      web_sockets.push(socket)
-      //io.emit('inicio', "messages")   
-      /*socket.on('new-menssage', function(data) {
-      messages.push(data);
-      io.sockets.emit('datosgps', messages)       
+      //web_sockets.push(socket)
+      /*socket.on('new-message',function(data){ 
+        //console.log(data.imei);
+        global_imei = data.imei;
       });*/
 });
+
+
+
 
 io.on('error',function(err){ 
   console.error(err)
@@ -99,13 +101,15 @@ net.createServer(function(sock) {
               ];    
               conmysql.query('INSERT INTO `gps_gpsub` (`imei`, `latit`, `longi`, `combu`) VALUES ? ',[insertaubi], function (err, result) {
                  if (err) throw err;
-                   io.emit('datosgps', {
-                    latit:latitudgps,
-                    longi:longitudgps,
-                    zoom:16,
-                    imei:imei
-                  });
-               });               
+               });  
+              //if(global_imei == imei){
+                  io.emit('datosgps', {
+                        latit:latitudgps,
+                        longi:longitudgps,
+                        zoom:16,
+                        imei:imei
+                  });  
+              //}           
             }
         }      
     });

@@ -62,10 +62,18 @@
           html += '<br/>';
           html += '<h11>LONGITUD: '+data[0].fields.longi+'</h11>';
           $('#datos').html(html);
+          var lat = data[0].fields.latit;
+          var lon = data[0].fields.longi;
+          lat = (lat*1);
+          lon = (lon*1);
+          initMap(lat,lon, 16);
+          sendimei(data[0].fields.imei);
         }else{
           html = ""; 
           html = '<div></div>';
           $('#datos').html(html);
+          init();
+          sendimei(imei);
         }
       }
     });
