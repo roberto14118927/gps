@@ -20,6 +20,10 @@
       zoom:8,
       center: uluru
     });
+
+    /*$('#search_text').keyup(function(){
+      var txt = 
+    });*/
   }
 
 
@@ -57,10 +61,39 @@
       type : 'get',
       success: function(data){
         if (data != ""){
+          moment().locale('es');
+          moment().format('MMMM Do YYYY, h:mm:ss a');
+          //alert(moment("20180101", "YYYYMMDD").fromNow());
+
+          var fecha = data[0].fields.date_create;
+          fecha = String(fecha);
+          fecha = fecha.substring(0, 10);
+          var hora = data[0].fields.date_create;
+          hora = String(hora);
+          hora = hora.substring(11, 19);
+          var actividad = fecha;
+          for (var i = 0; i < actividad.length; i++) {
+            actividad = actividad.replace("-", "");
+          }
+          var tiempo = moment(actividad, "YYYYMMDD").fromNow()
+          var conca = fecha + "," + hora;
           html = ""; 
           html += '<h11>LATITUD: '+data[0].fields.latit+'</h11>';
           html += '<br/>';
+          html += '<br/>';
           html += '<h11>LONGITUD: '+data[0].fields.longi+'</h11>';
+          html += '<br/>';
+          html += '<br/>';
+          html += '<h11>FECHA: '+ fecha +' </h11>';
+          html += '<br/>';
+          html += '<br/>';
+          html += '<h11>HORA: '+ hora +' </h11>';
+          html += '<br/>';
+          html += '<br/>';
+          html += '<h11>COMBUSTIBLE: '+data[0].fields.combu+' </h11>';
+          html += '<br/>';
+          html += '<br/>';
+          html += '<h11>ACTIVO: '+tiempo+' </h11>';
           $('#datos').html(html);
           var lat = data[0].fields.latit;
           var lon = data[0].fields.longi;

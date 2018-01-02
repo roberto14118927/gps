@@ -19,39 +19,46 @@
 {% block content %}
 	<div class="container-fluid full-height">
 		<div class="row row-height">
-			<div class="col-lg-4 content-left">
+			<div class="col-lg-4">
 				<br/>
-				{% for gps in gpsus %} 
-					
+				<br/>
+				<br/>
+				<!--<form>
+					<div class="search_bar_wrapper">
+						<div class="search_bar_list">
+							<input type="text" name="search_text" id="search_text" class="form-control" placeholder="Nombre">
+							<input type="submit" value="Buscar">
+						</div>
+					</div>
+				</form>-->
+				<br/>
+				<div style="width: 100%; height: 45%; overflow-y: scroll;">
+				{% for gps in gpsus %} 					
 					<div class="strip_list">
-						<!--<a href="#0" class="wish_bt"></a>-->
 						<figure>
 							<a href="javascript:call_imei({{ gps.imei }});"><img src="http://via.placeholder.com/565x565.jpg" alt=""></a>
 						</figure>
 						<small>UPGCH</small>
-						<h11>NOMBRE: {{ gps.cmp_nombre }}</h11>
+						<h11>
+							<font size="3">{{ gps.cmp_nombre }}</font>
+						</h11>
 						<br/>
-						<h11>UNIDAD: {{ gps.cmp_unidad }}</h11>
+						<h11>
+							<font size="3">{{ gps.cmp_unidad }}</font>
+						</h11>
 						<p></p>
 					</div>
 					<hr/>
-			    {% endfor %}			
+			    {% endfor %}
+			    </div>			
 				<!-- /strip_list -->
+				<br/>
 				<div class="box_badges">
-					<div id="datos">
-						
+					<div id="datos">					
 					</div>
-						<!--<div id="badge_level_2" class="disabled_badge"><img src="img/badges/badge_2.svg" alt="" width="100" height="100"><i class="icon-lock"></i></div>
-						<h3>User level 2</h3>
-						<p>Lorem ipsum dolor sit amet, pro id zril molestie, cum ne omittam quaestio. Pri delectus conclusionemque te.</p>
-						<ul>
-							<li><i class="icon-eye-7"></i>54 Views</li>
-							<li><i class="icon-users-1"></i>24 Patients</li>
-						</ul>-->
 				</div>
 			</div>
 			<!-- /content-left-->
-
 			<div class="col-lg-8 map-right">
 				<div id="map">
 					
