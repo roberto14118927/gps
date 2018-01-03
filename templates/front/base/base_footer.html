@@ -13,8 +13,12 @@
   var map;
   var markers = [];
   var html = "";
+  var geocoder;
+  var infowindow;
 
   function init(){
+      geocoder = new google.maps.Geocoder();
+      infowindow = new google.maps.InfoWindow();
       var uluru = {lat:16.768099, lng:-93.0854785};
       map = new google.maps.Map(document.getElementById('map'), {
       zoom:8,
@@ -44,15 +48,31 @@
       map.panTo(marker.position);
 
       google.maps.event.addListener(marker, 'position_changed', function(){
-  			getMarkerCoords(marker)
-  	});
+    			getMarkerCoords(marker)
+    	});
 
-    function setMapOnAll(map) {
-      for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-      }
-    }  
-  }
+      function setMapOnAll(map) {
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(map);
+        }
+      }  
+      var latlng = new google.maps.LatLng(latin, lngin);
+      geocoder.geocode ({'latLng': latlng}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[0]) {
+              $('#address').text(results[0].formatted_address);
+                //map.fitBounds(results[0].geometry.viewport);
+                //marker.setMap(map);
+                //marker.setPosition(latlng);           
+                infowindow.setContent(results[0].formatted_address);
+                infowindow.open(map, marker);
+          }
+       }
+      else{
+          $('#address').text("direccion error");
+        }
+    });
+    }
 
   function call_imei(imei){
     $.ajax({
@@ -105,6 +125,7 @@
           html = ""; 
           html = '<div></div>';
           $('#datos').html(html);
+          $('#address').html(html);
           init();
           sendimei(imei);
         }
