@@ -5,7 +5,8 @@
 <script src="{% static 'js/functions.js' %} ">
 </script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_LWerl_KKlujPhPZjAFuMZjZj8_vMSzg&callback=init"> </script>
-<script src="http://192.168.1.71:5678/socket.io/socket.io.js"></script>
+<!--<script src="http://192.168.1.71:5678/socket.io/socket.io.js"></script>-->
+<script src="http://10.10.2.189:5678/socket.io/socket.io.js"></script>
 {% load staticfiles %}
 <script src="{% static 'js/client.js' %}"></script>
 
@@ -95,7 +96,14 @@
           for (var i = 0; i < actividad.length; i++) {
             actividad = actividad.replace("-", "");
           }
-          var tiempo = moment(actividad, "YYYYMMDD").fromNow()
+          var año = fecha.substring(0,4);
+          var mes = fecha.substring(5,7);
+          var dia = fecha.substring(8,10);
+
+          var h = hora.substring(0,2);
+          var m = hora.substring(3,5);
+          //var tiempo = moment(actividad, "YYYYMMDD").fromNow()
+          var tiempo = moment([año,(mes-1),dia,h,m]).fromNow();
           var conca = fecha + "," + hora;
           html = ""; 
           html += '<h11>LATITUD: '+data[0].fields.latit+'</h11>';

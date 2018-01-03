@@ -9,7 +9,8 @@ var io = require('socket.io')(server);
 
 app.use(express.static('static/js'))
 const web_sockets = []
-var HOST = '192.168.1.71'
+//var HOST = '192.168.1.71'
+var HOST = '10.10.2.189'
 var PORT = 3000;
 server.listen(5678);
 var arr;
@@ -82,6 +83,7 @@ net.createServer(function(sock) {
               latitudgps = String(latitudgps);
               latitudgps = latitudgps.substring(0, 10);
               latitudgps = latitudgps * 1
+              console.log(latitudgps);
               //latitudgps = String(latitudgps);
               //--------------------------------------------------------------
               longitud = String(longitud);
