@@ -8,7 +8,6 @@ var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 app.use(express.static('static/js'))
-const web_sockets = []
 var HOST = '192.168.1.71'
 var PORT = 3000;
 server.listen(5678);
@@ -118,7 +117,7 @@ server.listen(3000, function(){
 net.createServer(function(sock) {
     console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);    
     sock.on('data', function(data) {
-        var str = data.toString('hex');
+        /*var str = data.toString('hex');
         var strin = hex2ascii(str);
         var dataclean = getCleanedString(strin);
         console.log(dataclean)
@@ -182,9 +181,51 @@ net.createServer(function(sock) {
                   });  
               //}           
             }
+        }*/
+        //console.log("ACTIVO" + Object.keys(sockets).length); 
+        console.log("ACTIVO " + Object.keys(sockets).length); 
+          
+          var MAC = '5C:CF:7F:83:B3:7E';
+          sockets[MAC] = sock;
+      if (sockets[MAC]) {
+        try {
+          sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
+        } catch (err) {
+          console.log("Error en la comunicacion. Intente de nuevo");
+          //io.emit("quitar-load", "Error en la comunicacion. Intente de nuevo");
         }
-        console.log("ACTIVO" + Object.keys(sockets).length);      
+      } else {
+        console.log("El dispositivo no esta en linea");
+        //io.emit("quitar-load", "El dispositivo no esta en linea");
+      }
+          //sockets[MAC].write("Hola Mundo");
+          //console.log(sockets[MAC] = sock);
+          /*if (Object.keys(sockets).length == 0) {
+            try {
+              var MAC = "5C:CF:7F:83:B3:7E";
+              sockets[MAC].write("Hola Mundo");
+            } catch (err) {
+              console.log("El equipo no esta en linea");
+              io.emit("quitar-load", "El equipo no esta en linea");
+            }
+          } else {
+            console.log("Dispositivo no conectado");
+            io.emit("quitar-load", "Dispositivo no conectado");
+          }*/
+
     });
+
+    sock.on('end', function() {
+        var idx = sockets.indexOf(sock);
+        if (idx != -1) {
+          sockets.splice(idx, 1);
+        }
+        console.log("..");
+        console.log("Inactivo(" + sockets.length + ")");
+    });
+
+
+
     /*sock.on('close', function(data) {
         console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
     });*/
