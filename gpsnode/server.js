@@ -9,13 +9,15 @@ var io = require('socket.io')(server);
 
 app.use(express.static('static/js'))
 const web_sockets = []
-//var HOST = '192.168.1.71'
-var HOST = '10.10.2.189'
+var HOST = '192.168.1.71'
 var PORT = 3000;
 server.listen(5678);
 var arr;
 var arr1;
 var global_imei="";
+
+var sockets = [];
+var web_sockets = [];
 
 var conmysql= mysql.createConnection({
   host: "localhost",
@@ -27,12 +29,80 @@ var conmysql= mysql.createConnection({
 
 
 io.on('connection', function(socket) {
-      //web_sockets.push(socket)
-      /*socket.on('new-message',function(data){ 
-        //console.log(data.imei);
-        global_imei = data.imei;
-      });*/
+      web_sockets.push(socket)
+
+    /*socket.on('send-function', function(data) {
+      search_function(data);
+    });*/
+      
+    socket.on('disconnect', function() {
+
+    var idx = web_sockets.indexOf(socket);
+    if (idx != -1) {
+      //console.log(idx);
+      web_sockets.splice(idx, 1);
+    }
+
+  });
 });
+
+/*function search_function(data) {
+
+  var MAC, Comando;
+
+  conn.query({
+    sql: "SELECT MAC FROM `tbl_equipos` WHERE `ID` = ?",
+    values: [data.Equipo]
+  }, function(error, results, fields) {
+
+    if (results.length > 0) {
+      console.log(results[0].MAC);
+      MAC = results[0].MAC;
+
+      conn.query({
+        sql: "SELECT Comando FROM `cat_funciones` WHERE `ID` = ?",
+        values: [data.Funcion]
+      }, function(error, results, fields) {
+
+        if (results.length > 0) {
+          console.log(results[0].Comando);
+          Comando = results[0].Comando;
+          //sockets[results[0].MAC].write(imei);
+          var datos = {
+            "MAC": MAC,
+            //"Comando": Comando
+          };
+          console.log(datos);
+          //sockets[results[0].MAC].write(imei);
+          if (Object.keys(sockets).length > 0) {
+            try {
+              sockets[MAC].write(Comando);
+            } catch (err) {
+              console.log("El equipo no esta en linea");
+              io.emit("quitar-load", "El equipo no esta en linea");
+            }
+          } else {
+            console.log("Dispositivo no conectado");
+            io.emit("quitar-load", "Dispositivo no conectado");
+          }
+        } else {
+          console.log("-->Funcion no disponible.");
+          io.emit("quitar-load", "Error al buscar la funcion");
+          return;
+        }
+      });
+      //conn.end();
+
+
+    } else {
+      console.log("-->El equipo no esta en la lista.");
+      io.emit("quitar-load", "El equipo no esta en la lista");
+      return;
+    }
+  });
+  //conn.end();
+  //conn = mysql.createConnection(conn_config);
+}*/
 
 
 
@@ -83,7 +153,6 @@ net.createServer(function(sock) {
               latitudgps = String(latitudgps);
               latitudgps = latitudgps.substring(0, 10);
               latitudgps = latitudgps * 1
-              console.log(latitudgps);
               //latitudgps = String(latitudgps);
               //--------------------------------------------------------------
               longitud = String(longitud);
@@ -113,13 +182,12 @@ net.createServer(function(sock) {
                   });  
               //}           
             }
-        }      
+        }
+        console.log("ACTIVO" + Object.keys(sockets).length);      
     });
-    
-    sock.on('close', function(data) {
+    /*sock.on('close', function(data) {
         console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-    });
-    
+    });*/
 }).listen(PORT, HOST);
 
 
