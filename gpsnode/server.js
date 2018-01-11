@@ -1,6 +1,22 @@
+/*var express = require ('express'); 
+var app = express (); 
+var server = require ('http'). Servidor (aplicación); 
+var io = require ('socket.io') (servidor, {orígenes: 'midominio.com: * http://midominio.com : * http://www.midominio.com:*'} );
+
+server.listen ([PORT NUMBER], [IP], function () { 
+console.log ("Servidor en funcionamiento ..."); 
+});*/
+
 
 var express = require('express');
 var app = express();
+app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow- Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+        next();
+    });
 var net = require('net');
 var hex2ascii = require('hex2ascii');
 var mysql = require('mysql');
