@@ -90,7 +90,7 @@ DATABASES = {
         },
         'NAME' : 'gpsdb',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306'
     }
@@ -140,3 +140,5 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'media')
 
 MEDIA_URL = '/media/'
+
+#INSERT INTO `gps_gpsus`( `id_user`, `imei`, `cmp_nombre`, `cmp_unidad`) VALUES (1,"862894020912211","Roberto Eduardo Guzman Ruiz","BHC-1411")

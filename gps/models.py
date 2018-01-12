@@ -11,7 +11,7 @@ class Gpsus(models.Model):
 	imei = models.CharField(max_length=255, blank=True, null=True)
 	cmp_nombre = models.CharField(max_length=255, blank=True, null=True)
 	cmp_unidad = models.CharField(max_length=255, blank=True, null=True)
-	date_create = models.DateTimeField(default=datetime.date.today)
+	date_create = models.DateTimeField(auto_now_add=True, blank=True)
 
 	def __str__(self):
 		return self.imei

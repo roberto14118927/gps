@@ -37,12 +37,73 @@ io.on('connection', function(socket) {
 
 
 
+/*function search_function(data) {
+
+  var MAC, Comando;
+
+  conn.query({
+    sql: "SELECT MAC FROM `tbl_equipos` WHERE `ID` = ?",
+    values: [data.Equipo]
+  }, function(error, results, fields) {
+
+    if (results.length > 0) {
+      console.log(results[0].MAC);
+      MAC = results[0].MAC;
+
+      conn.query({
+        sql: "SELECT Comando FROM `cat_funciones` WHERE `ID` = ?",
+        values: [data.Funcion]
+      }, function(error, results, fields) {
+
+        if (results.length > 0) {
+          console.log(results[0].Comando);
+          Comando = results[0].Comando;
+          //sockets[results[0].MAC].write(imei);
+          var datos = {
+            "MAC": MAC,
+            //"Comando": Comando
+          };
+          console.log(datos);
+          //sockets[results[0].MAC].write(imei);
+          if (Object.keys(sockets).length > 0) {
+            try {
+              sockets[MAC].write(Comando);
+            } catch (err) {
+              console.log("El equipo no esta en linea");
+              io.emit("quitar-load", "El equipo no esta en linea");
+            }
+          } else {
+            console.log("Dispositivo no conectado");
+            io.emit("quitar-load", "Dispositivo no conectado");
+          }
+        } else {
+          console.log("-->Funcion no disponible.");
+          io.emit("quitar-load", "Error al buscar la funcion");
+          return;
+        }
+      });
+      //conn.end();
+
+
+    } else {
+      console.log("-->El equipo no esta en la lista.");
+      io.emit("quitar-load", "El equipo no esta en la lista");
+      return;
+    }
+  });
+  //conn.end();
+  //conn = mysql.createConnection(conn_config);
+}*/
+
+
+
+
 io.on('error',function(err){ 
   console.error(err)
 });
 
 server.listen(3000, function(){
-  console.log("Servidor corriendo puerto 3000")
+  console.log("Servidor corriendo puerto: " + PORT)
 });
 
 net.createServer(function(sock) {
@@ -52,10 +113,10 @@ net.createServer(function(sock) {
         var strin = hex2ascii(str);
         var dataclean = getCleanedString(strin);
         console.log(dataclean)
-        arr = dataclean.toString().split(",");
+        /*arr = dataclean.toString().split(",");
         var veri = arr[1];
-        console.log(arr[3]);
-        if (typeof arr[3] !== null) {
+        console.log(arr[3]);*/
+        /*if (typeof arr[3] !== null) {
             if(veri == "verifica"){
                 var imei = arr[2];
                 var id_user = arr[3];
@@ -83,7 +144,6 @@ net.createServer(function(sock) {
               latitudgps = String(latitudgps);
               latitudgps = latitudgps.substring(0, 10);
               latitudgps = latitudgps * 1
-              console.log(latitudgps);
               //latitudgps = String(latitudgps);
               //--------------------------------------------------------------
               longitud = String(longitud);
@@ -113,13 +173,24 @@ net.createServer(function(sock) {
                   });  
               //}           
             }
-        }      
+        }*/
+
     });
-    
-    sock.on('close', function(data) {
+
+    sock.on('end', function() {
+        var idx = sockets.indexOf(sock);
+        if (idx != -1) {
+          sockets.splice(idx, 1);
+        }
+        console.log("..");
+        console.log("Inactivo(" + sockets.length + ")");
+    });
+
+
+
+    /*sock.on('close', function(data) {
         console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-    });
-    
+    });*/
 }).listen(PORT, HOST);
 
 

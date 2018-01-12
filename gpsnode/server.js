@@ -22,10 +22,23 @@ var hex2ascii = require('hex2ascii');
 var mysql = require('mysql');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var os = require('os');
+
+var interfaces = os.networkInterfaces();
+var addresses = [];
+for (var k in interfaces) {
+  for (var k2 in interfaces[k]) {
+    var address = interfaces[k][k2];
+    if (address.family === 'IPv4' && !address.internal) {
+      addresses.push(address.address);
+    }
+  }
+}
 
 app.use(express.static('static/js'))
-var HOST = '192.168.1.71'
-var PORT = 3000;
+
+var HOST = addresses[2];
+var PORT = 3333;
 server.listen(5678);
 var arr;
 var arr1;
@@ -37,7 +50,7 @@ var web_sockets = [];
 var conmysql= mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "root",
   database: "gpsdb"
 });
 
@@ -126,20 +139,19 @@ io.on('error',function(err){
   console.error(err)
 });
 
-server.listen(3000, function(){
-  console.log("Servidor corriendo puerto 3000")
+server.listen(PORT, function(){
+  console.log("Servidor corriendo puerto: " + PORT)
 });
 
 net.createServer(function(sock) {
     console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);    
     sock.on('data', function(data) {
-        /*var str = data.toString('hex');
+        var str = data.toString('hex');
         var strin = hex2ascii(str);
         var dataclean = getCleanedString(strin);
         console.log(dataclean)
         arr = dataclean.toString().split(",");
         var veri = arr[1];
-        console.log(arr[3]);
         if (typeof arr[3] !== null) {
             if(veri == "verifica"){
                 var imei = arr[2];
@@ -154,10 +166,10 @@ net.createServer(function(sock) {
                   });
 
             }else{
-              var imei = arr[3];
+              var imei = arr[2];
               imei = imei.replace(" ", "");
-              var latitud = arr[10];
-              var longitud = arr[12];
+              var latitud = arr[9];
+              var longitud = arr[11];
               latitud = String(latitud);
               var inicio = latitud.substring(0, 2);
               var fin = latitud.substring(2, 8);
@@ -192,14 +204,13 @@ net.createServer(function(sock) {
                   io.emit('datosgps', {
                         latit:latitudgps,
                         longi:longitudgps,
-                        zoom:16,
+                        zoom:17,
                         imei:imei
                   });  
               //}           
             }
-        }*/
-        //console.log("ACTIVO" + Object.keys(sockets).length); 
-        console.log("ACTIVO " + Object.keys(sockets).length); 
+        }
+      /*console.log("ACTIVO " + Object.keys(sockets).length); 
           
           var MAC = '5C:CF:7F:83:B3:7E';
           sockets[MAC] = sock;
@@ -213,7 +224,7 @@ net.createServer(function(sock) {
       } else {
         console.log("El dispositivo no esta en linea");
         //io.emit("quitar-load", "El dispositivo no esta en linea");
-      }
+      }*/
           //sockets[MAC].write("Hola Mundo");
           //console.log(sockets[MAC] = sock);
           /*if (Object.keys(sockets).length == 0) {
