@@ -1,0 +1,6 @@
+1.- git init
+2.- git add .
+3.- git commit -m "primer commit"
+4.- git remote set-url origin https://username:password@github.com/roberto14118927/prueba.git o git remote add origin https://github.com/roberto14118927/prueba.git --> dependiendo el caso
+5.- git push -u origin master
+Error git de permisos se resuelve con esta linea al momento de crear repositorio
