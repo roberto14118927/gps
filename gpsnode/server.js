@@ -158,9 +158,9 @@ net.createServer(function(sock) {
                 var id_user = arr[3];
                 var records1;
                  inserta = [
-                  [id_user, imei]
+                  [imei, id_user]
                 ];
-                  conmysql.query('INSERT INTO `gps_gpson` (`id_user`, `imei`) VALUES ? ',[inserta], function (err, result) {
+                  conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`) VALUES ? ',[inserta], function (err, result) {
                     if (err) throw err;
                     console.log("1 registro agregado ");
                   });
