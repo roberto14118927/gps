@@ -16,12 +16,15 @@ function render (data) {
 }
 
 function sendimei(imei_client){
-  imei_global = imei_client;
-  /*var mensaje = {
-    imei: imei
+  //imei_global = imei_client;gps 
+
+  var sendData = {
+    'imei': imei_client
   };
-  socket.emit('new-message', mensaje);*/
+  socket.emit('send-data', sendData);
 }
+
+
 
 
 

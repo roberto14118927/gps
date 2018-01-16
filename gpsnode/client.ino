@@ -9,7 +9,7 @@ void setup() {
     delay(10);
 
     // We start by connecting to a WiFi network
-    WiFiMulti.addAP("GUZMANRUIZ", "Guzmanruiz141189");
+    WiFiMulti.addAP("PLANEACION2", "Upgchtech2");
 
     Serial.println();
     Serial.println();
@@ -31,8 +31,8 @@ void setup() {
 
 
 void loop() {
-    const int httpPort = 3000;
-    const char * host = "192.168.1.71"; // ip or dns
+    const int httpPort = 3333;
+    const char * host = "10.10.2.96"; // ip or dns
 
     while (WiFi.status() != WL_CONNECTED) {
       isSocketConnect = false;
@@ -45,12 +45,14 @@ void loop() {
       //client.flush();
       delay(10);
     }
-    //if (client.connected()) {
+    if (client.connected()) {
         
       if (client.available() > 0) {
-           Serial.println("Llego algo");
+           //Serial.println("Llego algo");
            String dato = client.readStringUntil('\n');
            Serial.println(dato);
       }
-    //}
+     client.print("Conectado");
+      delay(1000);
+    }
 }
