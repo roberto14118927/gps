@@ -18,10 +18,11 @@ app.use(function(req, res, next) {
         next();
     });
 var net = require('net');
+const shortid = require('shortid');
 var hex2ascii = require('hex2ascii');
 var mysql = require('mysql');
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var serverio = require('http').Server(app);
+var io = require('socket.io')(serverio);
 var os = require('os');
 
 var interfaces = os.networkInterfaces();
@@ -37,8 +38,10 @@ for (var k in interfaces) {
 
 app.use(express.static('static/js'))
 var HOST = addresses[2];
-var PORT = 3333;
-server.listen(5678);
+var PORT = 3000;
+const ubica_sockets = []
+const clients = new Map()
+serverio.listen(5678);
 var arr;
 var arr1;
 var global_imei="";
@@ -53,67 +56,77 @@ var conmysql= mysql.createConnection({
   database: "gpsdb"
 });
 
-
+const server = net.createServer()
+server.listen(PORT, HOST);
 
 io.on('connection', function(socket) {
-      web_sockets.push(socket)
       
-    socket.on('disconnect', function() {
+      web_sockets.push(socket)
 
-    var idx = web_sockets.indexOf(socket);
-    if (idx != -1) {
-      //console.log(idx);
-      web_sockets.splice(idx, 1);
-    }
+      socket.on('ping', function(data) {
+        
+      });
 
-  });
+    
+      socket.on('disconnect', function() {
+
+      });
 });
 
 
-io.on('error',function(err){ 
-  console.error(err)
-});
 
-server.listen(PORT, function(){
-  console.log("Servidor corriendo puerto " + PORT)
-});
 
-net.createServer(function(sock) {
-    console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);    
+server.on('connection', function(sock) {
+    sock.setEncoding('utf8')
+    sock.id = shortid.generate();
+    sock.dispositivo = "";
+    ubica_sockets[sock.id] = sock;
+    clients.set(sock.id, sock)
+    console.log(" ");
+    console.log('CONNECTED: ' + sock.remoteAddress + ':' + sock.remotePort + ': ID: ' + sock.id);
+    var respuesta = "1," + sock.id;
+    sock.write(respuesta);
+
+    server.getConnections(function(err, count) {
+        console.log("Connections:: " + count);
+    });
+
+
     sock.on('data', function(data) {
-        console.log("ACTIVO " + Object.keys(sockets).length); 
-          
-          var MAC = '5C:CF:7F:83:B3:7E';
-          sockets[MAC] = sock;
-      if (sockets[MAC]) {
-        try {
-          sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
-        } catch (err) {
-          console.log("Error en la comunicacion. Intente de nuevo");
-          //io.emit("quitar-load", "Error en la comunicacion. Intente de nuevo");
-        }
-      } else {
-        console.log("El dispositivo no esta en linea");
-        //io.emit("quitar-load", "El dispositivo no esta en linea");
-      }
-
+        //analizarDatos(data.toString(), sock);
+        //const payload = parsePayload(data)
+        //console.log(payload);
     });
 
     sock.on('end', function() {
-        var idx = sockets.indexOf(sock);
-        if (idx != -1) {
-          sockets.splice(idx, 1);
-        }
-        console.log("..");
-        console.log("Inactivo(" + sockets.length + ")");
+        console.log('END: ' + sock.remoteAddress + ':' + sock.remotePort + ': ID: ' + sock.id);
+        delete ubica_sockets[sock.id]
+        clients.delete(sock.id)
+        console.log("Connections.: " + Object.keys(ubica_sockets).length);
     });
 
+    sock.on('error', function() {
+        console.log('ERROR: ' + sock.remoteAddress + ':' + sock.remotePort + ': ID: ' + sock.id);
+        delete ubica_sockets[sock.id]
+        clients.delete(sock.id)
+        console.log("Connections.: " + Object.keys(ubica_sockets).length);
+    });
 
+    sock.on('timeout', function() {
+        console.log('TIMEOUT: ' + sock.remoteAddress + ':' + sock.remotePort + ': ID: ' + sock.id);
+        delete ubica_sockets[sock.id]
+        clients.delete(sock.id)
+        console.log("Connections.: " + Object.keys(ubica_sockets).length);
+    });
 
-    /*sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-    });*/
-}).listen(PORT, HOST);
+    sock.on('close', function() {
+        console.log('CLOSE: ' + sock.remoteAddress + ':' + sock.remotePort + ': ID: ' + sock.id);
+        delete ubica_sockets[sock.id]
+        clients.delete(sock.id)
+        console.log("Connections.: " + Object.keys(ubica_sockets).length);
+    });
+
+});
 
 
 
