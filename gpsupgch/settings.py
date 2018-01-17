@@ -90,7 +90,7 @@ DATABASES = {
         },
         'NAME' : 'gpsdb',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306'
     }
