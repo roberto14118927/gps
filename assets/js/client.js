@@ -1,4 +1,4 @@
-var URL = 'http://10.10.2.96:5678';
+var URL = 'http://10.10.2.96:1234';
 var imei_global = "00000000000";
 
  var socket = io.connect(URL, {'forceNew': true
@@ -16,8 +16,6 @@ function render (data) {
 }
 
 function sendimei(imei_client){
-  //imei_global = imei_client;gps 
-
   var sendData = {
     'imei': imei_client
   };

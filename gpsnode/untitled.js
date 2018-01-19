@@ -23,7 +23,7 @@ var mysql = require('mysql');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var os = require('os');
-var conta = 0;
+
 var interfaces = os.networkInterfaces();
 var addresses = [];
 for (var k in interfaces) {
@@ -38,8 +38,8 @@ for (var k in interfaces) {
 app.use(express.static('static/js'))
 
 var HOST = addresses[2];
-var PORT = 4444;
-server.listen(1234);
+var PORT = 3333;
+server.listen(5678);
 var arr;
 var arr1;
 var global_imei="";
@@ -49,10 +49,31 @@ var web_sockets = [];
 
 var MACIN = "";
 
-io.on('connection', function(socket) {
-    
-    /*web_sockets.push(socket)  
+var conmysql= mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "root",
+  database: "gpsdb"
+});
 
+
+
+io.on('connection', function(socket) {
+    //web_sockets.push(socket)
+    socket.on('send-data', function(data) {
+        var MAC = '5C:CF:7F:83:B3:7E';
+        if (esp_sockets[MAC]) {
+            try {
+              esp_sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
+              console.log("Enviado")
+            } catch (err) {
+              console.log("Error Envio");
+              } 
+        }else {
+          console.log("El dispositivo inactivo");
+        }
+    });
+      
     socket.on('disconnect', function() {
         var idx = web_sockets.indexOf(socket);
         if (idx != -1) {
@@ -75,13 +96,6 @@ io.on('connection', function(socket) {
     socket.on('close', function() {
         
     });
-
-    socket.on('send-data', function(data) {
-      sendData();
-  });*/
-  socket.on('send-data', function(data) {
-      sendData();
-  });
 });
 
 
@@ -97,99 +111,39 @@ server.listen(PORT, function(){
 
 
 
-var ESP8266 = net.createServer(function(sock) {
+net.createServer(function(sock) {
+    console.log('CONNECTED: ' + sock.remoteAddress +':'+ sock.remotePort);   
 
     sock.on('data', function(data) {
-      
-        MACIN = data.toString();
+        //console.log(data.toString());
+        /*MACIN = data.toString(); 
         console.log(MACIN);
-        MACIN = MACIN.trim();
-        MACIN = MACIN.replace(' ','');  
-      if(conta == 0){
-          esp_sockets[MACIN] = sock; 
-          conta = 1;
-          console.log("registro ok");
-      }
-        console.log("DISPOSITIVOS EN LINEA: " + Object.keys(esp_sockets).length);
+        esp_sockets['5C:CF:7F:83:B3:7E'] = sock;
+        Object.keys(esp_sockets).length;*/
+        Guardamac(data.toString(),sock)  
+        Object.keys(esp_sockets).length;
     });
+
     
-    /*sock.on('close', function(data) {
-      console.log("close");
-    });*/
-    sock.on('timeout', function(data) {
-      console.log("timeout");
-    });
-
     sock.on('end', function() {
-      var idx = esp_sockets.indexOf(sock);
-      if (idx != -1) {
-        esp_sockets.splice(idx, 1);
-      }
-      console.log("");
+        var idx = esp_sockets.indexOf(sock);
+        if (idx != -1) {
+          esp_sockets.splice(idx, 1);
+        }
     });
 
-    /*sock.on('error', function(data) {
-      console.log("error...");
-    });*/
+    sock.on('close', function(data) {
+        console.log("close");
+    });
+    sock.on('timeout', function(data) {
+        console.log("timeout");
+    });
 
-});
+}).listen(PORT, HOST);
 
-ESP8266.on('error', function(e) {
-  console.log("Error: Necesario reiniciar...");
-  if (e.code == 'EADDRINUSE') {
-    console.log('Address in use, retrying...');
-    setTimeout(function() {
-      ESP8266.close();
-      ESP8266.listen(PORT, PORT);
-    }, 1000);
-  }
-});
-
-ESP8266.listen(PORT, PORT);
-
-
-//FUNCIONES*********************************
-function sendData(){
-  var MAC = '5C:CF:7F:83:B3:7E';
-  //var MAC = '5C:CF:7F:80:E6:8B';
-  if (esp_sockets[MAC]) {
-      try {
-          esp_sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
-          console.log("Enviado")
-      } catch (err) {
-          console.log(err);
-          console.log("Error Envio");
-        } 
-  } 
-  else {
-      console.log("El dispositivo inactivo");
-  }
+function Guardamac(mac, sock){
+    esp_sockets[mac] = sock
 }
-
- /*setTimeout(function() {
-      var MAC = '5C:CF:7F:83:B3:7E ';
-  if (esp_sockets[MAC]) {
-      try {
-          esp_sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
-          console.log("Enviado")
-      } catch (err) {
-          console.log(err);
-          console.log("Error Envio");
-        } 
-  } 
-  else {
-      console.log("El dispositivo inactivo");
-  }
-    }, 10000);*/
-
-
-
-/*function Guardamac(mac, sock){
-    console.log(mac);
-    esp_sockets['5C:CF:7F:83:B3:7E'] = sock
-}*/
-
-
 
 
 /*
