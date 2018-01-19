@@ -58,82 +58,31 @@ var conmysql= mysql.createConnection({
 
 io.on('connection', function(socket) {
       web_sockets.push(socket)
-
-    /*socket.on('send-function', function(data) {
-      search_function(data);
-    });*/
       
     socket.on('disconnect', function() {
-
-    var idx = web_sockets.indexOf(socket);
-    if (idx != -1) {
-      //console.log(idx);
-      web_sockets.splice(idx, 1);
-    }
-
-  });
-});
-
-/*function search_function(data) {
-
-  var MAC, Comando;
-
-  conn.query({
-    sql: "SELECT MAC FROM `tbl_equipos` WHERE `ID` = ?",
-    values: [data.Equipo]
-  }, function(error, results, fields) {
-
-    if (results.length > 0) {
-      console.log(results[0].MAC);
-      MAC = results[0].MAC;
-
-      conn.query({
-        sql: "SELECT Comando FROM `cat_funciones` WHERE `ID` = ?",
-        values: [data.Funcion]
-      }, function(error, results, fields) {
-
-        if (results.length > 0) {
-          console.log(results[0].Comando);
-          Comando = results[0].Comando;
-          //sockets[results[0].MAC].write(imei);
-          var datos = {
-            "MAC": MAC,
-            //"Comando": Comando
-          };
-          console.log(datos);
-          //sockets[results[0].MAC].write(imei);
-          if (Object.keys(sockets).length > 0) {
-            try {
-              sockets[MAC].write(Comando);
-            } catch (err) {
-              console.log("El equipo no esta en linea");
-              io.emit("quitar-load", "El equipo no esta en linea");
-            }
-          } else {
-            console.log("Dispositivo no conectado");
-            io.emit("quitar-load", "Dispositivo no conectado");
+          var idx = web_sockets.indexOf(socket);
+          if (idx != -1) {
+            //console.log(idx);
+            web_sockets.splice(idx, 1);
           }
-        } else {
-          console.log("-->Funcion no disponible.");
-          io.emit("quitar-load", "Error al buscar la funcion");
-          return;
-        }
-      });
-      //conn.end();
+    });
 
+    socket.on('end', function() {
+        
+    });
 
-    } else {
-      console.log("-->El equipo no esta en la lista.");
-      io.emit("quitar-load", "El equipo no esta en la lista");
-      return;
-    }
-  });
-  //conn.end();
-  //conn = mysql.createConnection(conn_config);
-}*/
+    socket.on('error', function() {
 
+    });
 
+    socket.on('timeout', function() {
+        
+    });
 
+    socket.on('close', function() {
+        
+    });
+});
 
 io.on('error',function(err){ 
   console.error(err)
@@ -200,62 +149,17 @@ net.createServer(function(sock) {
               conmysql.query('INSERT INTO `gps_gpsub` (`imei`, `latit`, `longi`, `combu`) VALUES ? ',[insertaubi], function (err, result) {
                  if (err) throw err;
                });  
-              //if(global_imei == imei){
                   io.emit('datosgps', {
                         latit:latitudgps,
                         longi:longitudgps,
                         zoom:17,
                         imei:imei
-                  });  
-              //}           
+                  });            
             }
         }
-      /*console.log("ACTIVO " + Object.keys(sockets).length); 
-          
-          var MAC = '5C:CF:7F:83:B3:7E';
-          sockets[MAC] = sock;
-      if (sockets[MAC]) {
-        try {
-          sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
-        } catch (err) {
-          console.log("Error en la comunicacion. Intente de nuevo");
-          //io.emit("quitar-load", "Error en la comunicacion. Intente de nuevo");
-        }
-      } else {
-        console.log("El dispositivo no esta en linea");
-        //io.emit("quitar-load", "El dispositivo no esta en linea");
-      }*/
-          //sockets[MAC].write("Hola Mundo");
-          //console.log(sockets[MAC] = sock);
-          /*if (Object.keys(sockets).length == 0) {
-            try {
-              var MAC = "5C:CF:7F:83:B3:7E";
-              sockets[MAC].write("Hola Mundo");
-            } catch (err) {
-              console.log("El equipo no esta en linea");
-              io.emit("quitar-load", "El equipo no esta en linea");
-            }
-          } else {
-            console.log("Dispositivo no conectado");
-            io.emit("quitar-load", "Dispositivo no conectado");
-          }*/
 
     });
 
-    sock.on('end', function() {
-        var idx = sockets.indexOf(sock);
-        if (idx != -1) {
-          sockets.splice(idx, 1);
-        }
-        console.log("..");
-        console.log("Inactivo(" + sockets.length + ")");
-    });
-
-
-
-    /*sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-    });*/
 }).listen(PORT, HOST);
 
 

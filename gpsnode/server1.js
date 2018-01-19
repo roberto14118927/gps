@@ -10,8 +10,8 @@ var io = require('socket.io')(server);
 app.use(express.static('static/js'))
 const web_sockets = []
 //var HOST = '192.168.1.71'
-var HOST = '10.10.2.189'
-var PORT = 3000;
+var HOST = '10.10.2.96'
+var PORT = 3333;
 server.listen(5678);
 var arr;
 var arr1;
@@ -20,7 +20,7 @@ var global_imei="";
 var conmysql= mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "root",
   database: "gpsdb"
 });
 

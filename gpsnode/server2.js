@@ -38,7 +38,7 @@ for (var k in interfaces) {
 
 app.use(express.static('static/js'))
 var HOST = addresses[2];
-var PORT = 3000;
+var PORT = 3333;
 const ubica_sockets = []
 const clients = new Map()
 serverio.listen(5678);
