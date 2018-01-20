@@ -38,7 +38,7 @@ for (var k in interfaces) {
 app.use(express.static('static/js'))
 
 var HOST = addresses[2];
-var PORT = 4444;
+var PORT = 3000;
 server.listen(1234);
 var arr;
 var arr1;
@@ -100,22 +100,26 @@ server.listen(PORT, function(){
 var ESP8266 = net.createServer(function(sock) {
 
     sock.on('data', function(data) {
-      
-        MACIN = data.toString();
-        console.log(MACIN);
-        MACIN = MACIN.trim();
-        MACIN = MACIN.replace(' ','');  
-      if(conta == 0){
-          esp_sockets[MACIN] = sock; 
-          conta = 1;
-          console.log("registro ok");
-      }
+        
+        var datosin = data.toString().split(".");
+        if (datosin.length == 0) {
+           return;
+        }
+        switch (datosin[1]) {
+          case "0":
+              esp_sockets[datosin[0]] = sock; 
+              console.log("Registro Ok");
+          break;
+          case "1":
+              console.log("Recepcion de datos");
+          break;
+        } 
         console.log("DISPOSITIVOS EN LINEA: " + Object.keys(esp_sockets).length);
     });
     
-    /*sock.on('close', function(data) {
+    sock.on('close', function(data) {
       console.log("close");
-    });*/
+    });
     sock.on('timeout', function(data) {
       console.log("timeout");
     });
@@ -128,9 +132,9 @@ var ESP8266 = net.createServer(function(sock) {
       console.log("");
     });
 
-    /*sock.on('error', function(data) {
+    sock.on('error', function(data) {
       console.log("error...");
-    });*/
+    });
 
 });
 
@@ -150,8 +154,8 @@ ESP8266.listen(PORT, PORT);
 
 //FUNCIONES*********************************
 function sendData(){
-  var MAC = '5C:CF:7F:83:B3:7E';
-  //var MAC = '5C:CF:7F:80:E6:8B';
+  //var MAC = '5C:CF:7F:83:B3:7E';
+  var MAC = '5C:CF:7F:80:E6:8B';
   if (esp_sockets[MAC]) {
       try {
           esp_sockets[MAC].write("Roberto Eduardo Guzman Ruiz");

@@ -1,4 +1,4 @@
-var URL = 'http://10.10.2.96:1234';
+var URL = 'http://192.168.1.69:1234';
 var imei_global = "00000000000";
 
  var socket = io.connect(URL, {'forceNew': true
