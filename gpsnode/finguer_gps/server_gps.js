@@ -1,21 +1,51 @@
+/*var express = require ('express'); 
+var app = express (); 
+var server = require ('http'). Servidor (aplicación); 
+var io = require ('socket.io') (servidor, {orígenes: 'midominio.com: * http://midominio.com : * http://www.midominio.com:*'} );
+
+server.listen ([PORT NUMBER], [IP], function () { 
+console.log ("Servidor en funcionamiento ..."); 
+});*/
+
 
 var express = require('express');
 var app = express();
+app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header("Access-Control-Allow-Headers", "X-Requested-With");
+        res.header("Access-Control-Allow- Headers", "Content-Type");
+        res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
+        next();
+    });
 var net = require('net');
 var hex2ascii = require('hex2ascii');
 var mysql = require('mysql');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var os = require('os');
+
+var interfaces = os.networkInterfaces();
+var addresses = [];
+for (var k in interfaces) {
+  for (var k2 in interfaces[k]) {
+    var address = interfaces[k][k2];
+    if (address.family === 'IPv4' && !address.internal) {
+      addresses.push(address.address);
+    }
+  }
+}
 
 app.use(express.static('static/js'))
-const web_sockets = []
-//var HOST = '192.168.1.71'
-var HOST = '10.10.2.96'
+
+var HOST = addresses[2];
 var PORT = 3333;
 server.listen(5678);
 var arr;
 var arr1;
 var global_imei="";
+
+var sockets = [];
+var web_sockets = [];
 
 var conmysql= mysql.createConnection({
   host: "localhost",
@@ -27,82 +57,38 @@ var conmysql= mysql.createConnection({
 
 
 io.on('connection', function(socket) {
-      //web_sockets.push(socket)
-      /*socket.on('new-message',function(data){ 
-        //console.log(data.imei);
-        global_imei = data.imei;
-      });*/
-});
-
-
-
-
-/*function search_function(data) {
-
-  var MAC, Comando;
-
-  conn.query({
-    sql: "SELECT MAC FROM `tbl_equipos` WHERE `ID` = ?",
-    values: [data.Equipo]
-  }, function(error, results, fields) {
-
-    if (results.length > 0) {
-      console.log(results[0].MAC);
-      MAC = results[0].MAC;
-
-      conn.query({
-        sql: "SELECT Comando FROM `cat_funciones` WHERE `ID` = ?",
-        values: [data.Funcion]
-      }, function(error, results, fields) {
-
-        if (results.length > 0) {
-          console.log(results[0].Comando);
-          Comando = results[0].Comando;
-          //sockets[results[0].MAC].write(imei);
-          var datos = {
-            "MAC": MAC,
-            //"Comando": Comando
-          };
-          console.log(datos);
-          //sockets[results[0].MAC].write(imei);
-          if (Object.keys(sockets).length > 0) {
-            try {
-              sockets[MAC].write(Comando);
-            } catch (err) {
-              console.log("El equipo no esta en linea");
-              io.emit("quitar-load", "El equipo no esta en linea");
-            }
-          } else {
-            console.log("Dispositivo no conectado");
-            io.emit("quitar-load", "Dispositivo no conectado");
+      web_sockets.push(socket)
+      
+    socket.on('disconnect', function() {
+          var idx = web_sockets.indexOf(socket);
+          if (idx != -1) {
+            web_sockets.splice(idx, 1);
           }
-        } else {
-          console.log("-->Funcion no disponible.");
-          io.emit("quitar-load", "Error al buscar la funcion");
-          return;
-        }
-      });
-      //conn.end();
+    });
 
+    socket.on('end', function() {
+        
+    });
 
-    } else {
-      console.log("-->El equipo no esta en la lista.");
-      io.emit("quitar-load", "El equipo no esta en la lista");
-      return;
-    }
-  });
-  //conn.end();
-  //conn = mysql.createConnection(conn_config);
-}*/
+    socket.on('error', function() {
 
+    });
 
+    socket.on('timeout', function() {
+        
+    });
 
+    socket.on('close', function() {
+        
+    });
+
+});
 
 io.on('error',function(err){ 
   console.error(err)
 });
 
-server.listen(3000, function(){
+server.listen(PORT, function(){
   console.log("Servidor corriendo puerto: " + PORT)
 });
 
@@ -113,27 +99,26 @@ net.createServer(function(sock) {
         var strin = hex2ascii(str);
         var dataclean = getCleanedString(strin);
         console.log(dataclean)
-        /*arr = dataclean.toString().split(",");
+        arr = dataclean.toString().split(",");
         var veri = arr[1];
-        console.log(arr[3]);*/
-        /*if (typeof arr[3] !== null) {
+        if (typeof arr[3] !== null) {
             if(veri == "verifica"){
                 var imei = arr[2];
                 var id_user = arr[3];
                 var records1;
                  inserta = [
-                  [id_user, imei]
+                  [imei, id_user]
                 ];
-                  conmysql.query('INSERT INTO `gps_gpson` (`id_user`, `imei`) VALUES ? ',[inserta], function (err, result) {
+                  conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`) VALUES ? ',[inserta], function (err, result) {
                     if (err) throw err;
                     console.log("1 registro agregado ");
                   });
 
             }else{
-              var imei = arr[3];
+              var imei = arr[2];
               imei = imei.replace(" ", "");
-              var latitud = arr[10];
-              var longitud = arr[12];
+              var latitud = arr[9];
+              var longitud = arr[11];
               latitud = String(latitud);
               var inicio = latitud.substring(0, 2);
               var fin = latitud.substring(2, 8);
@@ -164,33 +149,17 @@ net.createServer(function(sock) {
               conmysql.query('INSERT INTO `gps_gpsub` (`imei`, `latit`, `longi`, `combu`) VALUES ? ',[insertaubi], function (err, result) {
                  if (err) throw err;
                });  
-              //if(global_imei == imei){
                   io.emit('datosgps', {
                         latit:latitudgps,
                         longi:longitudgps,
-                        zoom:16,
+                        zoom:17,
                         imei:imei
-                  });  
-              //}           
+                  });            
             }
-        }*/
-
-    });
-
-    sock.on('end', function() {
-        var idx = sockets.indexOf(sock);
-        if (idx != -1) {
-          sockets.splice(idx, 1);
         }
-        console.log("..");
-        console.log("Inactivo(" + sockets.length + ")");
+
     });
 
-
-
-    /*sock.on('close', function(data) {
-        console.log('CLOSED: ' + sock.remoteAddress +' '+ sock.remotePort);
-    });*/
 }).listen(PORT, HOST);
 
 

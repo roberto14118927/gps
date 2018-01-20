@@ -10,13 +10,13 @@ console.log ("Servidor en funcionamiento ...");
 
 var express = require('express');
 var app = express();
-/*app.use(function(req, res, next) {
+app.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "X-Requested-With");
         res.header("Access-Control-Allow- Headers", "Content-Type");
         res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
         next();
-    });*/
+    });
 var net = require('net');
 var hex2ascii = require('hex2ascii');
 var mysql = require('mysql');
@@ -44,44 +44,46 @@ var arr;
 var arr1;
 var global_imei="";
 
-var esp_sockets = [];
+const esp_sockets = [];
 var web_sockets = [];
 
 var MACIN = "";
 
 io.on('connection', function(socket) {
     
-    /*web_sockets.push(socket)  
+  web_sockets.push(socket)  
 
-    socket.on('disconnect', function() {
-        var idx = web_sockets.indexOf(socket);
-        if (idx != -1) {
-          web_sockets.splice(idx, 1);
-        }
-    });
+  socket.on('disconnect', function() {
+      var idx = web_sockets.indexOf(socket);
+      if (idx != -1) {
+        web_sockets.splice(idx, 1);
+      }
+  });
 
-    socket.on('end', function() {
-        
-    });
+  socket.on('end', function() {
+      
+  });
 
-    socket.on('error', function() {
+  socket.on('error', function() {
 
-    });
+  });
 
-    socket.on('timeout', function() {
-        
-    });
+  socket.on('timeout', function() {
+      
+  });
 
-    socket.on('close', function() {
-        
-    });
+  socket.on('close', function() {
+      
+  });
 
-    socket.on('send-data', function(data) {
-      sendData();
-  });*/
+  socket.on('send-data', function(data) {
+    sendData();
+  });
+
   socket.on('send-data', function(data) {
       sendData();
   });
+
 });
 
 
@@ -99,22 +101,21 @@ server.listen(PORT, function(){
 
 var ESP8266 = net.createServer(function(sock) {
 
-    sock.on('data', function(data) {
-        
-        var datosin = data.toString().split(".");
-        if (datosin.length == 0) {
-           return;
-        }
-        switch (datosin[1]) {
-          case "0":
-              esp_sockets[datosin[0]] = sock; 
-              console.log("Registro Ok");
-          break;
-          case "1":
-              console.log("Recepcion de datos");
-          break;
-        } 
-        console.log("DISPOSITIVOS EN LINEA: " + Object.keys(esp_sockets).length);
+    sock.on('data', function(data) {     
+      var datosin = data.toString().split(".");
+      if (datosin.length == 0) {
+         return;
+      }
+      switch (datosin[1]) {
+        case "0":
+            esp_sockets[datosin[0]] = sock; 
+            console.log("Registro Ok");
+        break;
+        case "1":
+            console.log("Recepcion de datos");
+        break;
+      } 
+      console.log("DISPOSITIVOS EN LINEA: " + Object.keys(esp_sockets).length);
     });
     
     sock.on('close', function(data) {
@@ -154,7 +155,6 @@ ESP8266.listen(PORT, PORT);
 
 //FUNCIONES*********************************
 function sendData(){
-  //var MAC = '5C:CF:7F:83:B3:7E';
   var MAC = '5C:CF:7F:80:E6:8B';
   if (esp_sockets[MAC]) {
       try {
@@ -169,32 +169,6 @@ function sendData(){
       console.log("El dispositivo inactivo");
   }
 }
-
- /*setTimeout(function() {
-      var MAC = '5C:CF:7F:83:B3:7E ';
-  if (esp_sockets[MAC]) {
-      try {
-          esp_sockets[MAC].write("Roberto Eduardo Guzman Ruiz");
-          console.log("Enviado")
-      } catch (err) {
-          console.log(err);
-          console.log("Error Envio");
-        } 
-  } 
-  else {
-      console.log("El dispositivo inactivo");
-  }
-    }, 10000);*/
-
-
-
-/*function Guardamac(mac, sock){
-    console.log(mac);
-    esp_sockets['5C:CF:7F:83:B3:7E'] = sock
-}*/
-
-
-
 
 /*
 events.js:183 

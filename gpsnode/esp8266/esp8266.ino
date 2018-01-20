@@ -56,9 +56,6 @@ void setup() {
   delay(1000);
   //WiFi.mode(WIFI_STA);
   WiFi.begin("GUZMANRUIZ","Guzmanruiz141189");
-  //while (WiFi.status() != WL_CONNECTED) {
-  
-  //}
 }
 
 
@@ -85,7 +82,6 @@ void loop() {
 
     
     if (millis() - timeout > 5000) {
-        Serial.println("Envia");
         client.print(WiFi.macAddress() + ".1");
         client.flush();
         timeout = millis();
