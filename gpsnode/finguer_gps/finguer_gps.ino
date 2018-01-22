@@ -1,5 +1,5 @@
-
 #include <Adafruit_Fingerprint.h>
+#include <string.h>
 uint8_t id;
 uint8_t idin = 0;
 bool b1 = false;
@@ -16,6 +16,9 @@ int ledState = LOW;
 long previousMillis = 0;      
 long interval = 50000;           
 bool gpsvalida = true;
+char separador[] = ",";
+char *resultado = NULL;
+char campos[20][15];
 
 
 Adafruit_Fingerprint finger = Adafruit_Fingerprint(&Serial2);
@@ -186,37 +189,32 @@ void asignacionname()
   int ID = 0;
   gpsvalida = true;
   ID = finger.fingerID;
-  if (ID != 0  ){
-      /*String StrOut = "AT$TTGPSQRY=10";
-      Serial1.println(StrOut);
-      while((!Serial1.available()>0) && (gpsvalida == true)){
+  if (ID != 0  ) {
+      String AT = "AT$TTGPSQRY=10";
+      Serial1.println(AT);
+      while((!Serial1.available()>0) && gpsvalida == true){
             Ingps = Serial1.readString();
             Ingps.replace("\n",",");
-            
             Ingps.replace(":",",");
-
-            //Serial.println(Ingps);
-
-            Ingps = Ingps.substring(0, Ingps.length() - 1);
-            for (int i = 0; i < Ingps.length(); i++) {
-              if (Ingps.substring(i, i+1) == ",") {
-                 Ingps = Ingps.substring(3,i);
-                 Serial.println(Ingps);
-                break;
+            Serial.println(Ingps);
+            Serial.println();
+            resultado = strtok(&Ingps[0],separador);
+            int index = 0;
+            while(resultado != NULL){
+              strcpy(campos[index],resultado);
+              index++;
+              resultado = strtok(NULL,separador);
               }
-            }
-           
-         gpsvalida = false;    
-      }*/
-       /*Serial.println(Ingps);
-       delay(200);*/
+           gpsvalida = false;
+      }
        digitalWrite(ledEncendidoStart,HIGH);
        delay(50);
        String zero = "0,";
        String verifica = "verifica,";
        String imei = "862894020912211,";
        String idout = String(ID);
-       String dataout = zero + verifica + imei + idout; //+ Ingps; //+ "," + idout; 
+       String dataout = zero + verifica + imei + idout + "," + campos[5] + "," + campos [7];  
+       Serial.println(dataout);
        dataout.replace("\n",""); 
        Serial1.print("AT$TTSNDMG=4,");
        Serial1.write((byte)0x22);
@@ -381,3 +379,53 @@ void paso1() {
         }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*void setup() {
+  // Open serial communications and wait for port to open:
+  Serial.begin(115200);
+  Serial1.begin(115200);
+
+}
+
+void loop() { // run over and over
+  if (Serial.available()) {
+      String valor = Serial.readString();
+      Serial1.println(valor);    
+  }
+  
+   if (Serial1.available()) {
+    Serial.print(Serial1.readString());
+  }
+}*/
