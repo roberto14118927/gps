@@ -213,7 +213,7 @@ void asignacionname()
        String verifica = "verifica,";
        String imei = "862894020912211,";
        String idout = String(ID);
-       String dataout = zero + verifica + imei + idout + "," + campos[5] + "," + campos [7];  
+       String dataout = zero + verifica + imei + idout + "," + campos[5] + "," + campos [7] + "," + "1";  
        Serial.println(dataout);
        dataout.replace("\n",""); 
        Serial1.print("AT$TTSNDMG=4,");

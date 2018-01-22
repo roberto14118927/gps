@@ -106,6 +106,8 @@ net.createServer(function(sock) {
                 var imei = arr[2];
                 var id_user = arr[3];
                 var latit = arr[4];
+                var status = arr[5];
+
                 latit = String(latit);
                 var inicio = latit.substring(0, 2);
                 var fin = latit.substring(2, 8);
@@ -131,9 +133,9 @@ net.createServer(function(sock) {
                 
                 var records1;
                  inserta = [
-                  [imei, id_user, latitudgps, longitudgps]
+                  [imei, id_user, latitudgps, longitudgps, status]
                 ];
-                  conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`,`latit`,`longi`) VALUES ? ',[inserta], function (err, result) {
+                  conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`,`latit`,`longi`,`status`) VALUES ? ',[inserta], function (err, result) {
                     if (err) throw err;
                     console.log("1 registro agregado ");
                   });
