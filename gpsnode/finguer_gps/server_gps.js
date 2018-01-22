@@ -105,11 +105,35 @@ net.createServer(function(sock) {
             if(veri == "verifica"){
                 var imei = arr[2];
                 var id_user = arr[3];
+                var latit = arr[4];
+                latit = String(latit);
+                var inicio = latit.substring(0, 2);
+                var fin = latit.substring(2, 8);
+                var mm = (fin/10000);
+                mm = (mm/60);
+                var dd = inicio;
+                var latitudgps = (parseInt(dd) + parseFloat(mm));
+                latitudgps = String(latitudgps);
+                latitudgps = latitudgps.substring(0, 10);
+                latitudgps = latitudgps * 1
+
+                var longi = arr[5];
+                longi = String(longi);
+                var inicio1 = longi.substring(0, 3);
+                var fin1 = longi.substring(3, 9);
+                var mm1 = (fin1/10000);
+                mm1 = (mm1/60);
+                var dd1 = inicio1;
+                var longitudgps = (parseInt(dd1) + parseFloat(mm1));
+                longitudgps = String(longitudgps);
+                longitudgps = longitudgps.substring(0, 10);
+                longitudgps = (longitudgps*-1);
+                
                 var records1;
                  inserta = [
-                  [imei, id_user]
+                  [imei, id_user, latitudgps, longitudgps]
                 ];
-                  conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`) VALUES ? ',[inserta], function (err, result) {
+                  conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`,`latit`,`longi`) VALUES ? ',[inserta], function (err, result) {
                     if (err) throw err;
                     console.log("1 registro agregado ");
                   });
@@ -149,12 +173,12 @@ net.createServer(function(sock) {
               conmysql.query('INSERT INTO `gps_gpsub` (`imei`, `latit`, `longi`, `combu`) VALUES ? ',[insertaubi], function (err, result) {
                  if (err) throw err;
                });  
-                  io.emit('datosgps', {
-                        latit:latitudgps,
-                        longi:longitudgps,
-                        zoom:17,
-                        imei:imei
-                  });            
+              io.emit('datosgps', {
+                    latit:latitudgps,
+                    longi:longitudgps,
+                    zoom:17,
+                    imei:imei
+              });            
             }
         }
 
