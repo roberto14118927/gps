@@ -19,10 +19,14 @@ app.use(function(req, res, next) {
     });
 var net = require('net');
 var hex2ascii = require('hex2ascii');
-var mysql = require('mysql');
+//var mysql = require('mysql');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var os = require('os');
+var pg = require('pg');
+
+//DB Connection to String
+var connect = "postgres://postgres:123456@localhost/gpsdb"
 
 var interfaces = os.networkInterfaces();
 var addresses = [];
@@ -38,7 +42,7 @@ for (var k in interfaces) {
 app.use(express.static('static/js'))
 
 var HOST = addresses[2];
-var PORT = 3000;
+var PORT = 3333;
 server.listen(5678);
 var arr;
 var arr1;
@@ -47,12 +51,12 @@ var global_imei="";
 var sockets = [];
 var web_sockets = [];
 
-var conmysql= mysql.createConnection({
+/*var conmysql= mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "root",
   database: "gpsdb"
-});
+});*/
 
 
 
