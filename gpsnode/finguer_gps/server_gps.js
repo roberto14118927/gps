@@ -38,7 +38,7 @@ for (var k in interfaces) {
 app.use(express.static('static/js'))
 
 var HOST = addresses[2];
-var PORT = 3333;
+var PORT = 3000;
 server.listen(5678);
 var arr;
 var arr1;
@@ -50,7 +50,7 @@ var web_sockets = [];
 var conmysql= mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "root",
+  password: "",
   database: "gpsdb"
 });
 
@@ -89,7 +89,7 @@ io.on('error',function(err){
 });
 
 server.listen(PORT, function(){
-  console.log("Servidor corriendo puerto: " + PORT)
+  console.log("Servidor corriendo puerto: " + PORT )
 });
 
 net.createServer(function(sock) {
@@ -138,6 +138,9 @@ net.createServer(function(sock) {
                   conmysql.query('INSERT INTO `gps_gpson` (`imei`,`id_user_id`,`latit`,`longi`,`status`) VALUES ? ',[inserta], function (err, result) {
                     if (err) throw err;
                     console.log("1 registro agregado ");
+                    io.emit('notificacion', {
+                          imei:imei
+                    });   
                   });
 
             }else{

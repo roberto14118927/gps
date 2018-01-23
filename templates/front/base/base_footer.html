@@ -5,16 +5,90 @@
 <script src="{% static 'js/functions.js' %} ">
 </script><script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA_LWerl_KKlujPhPZjAFuMZjZj8_vMSzg&callback=init"> </script>
-<script src="http://10.10.2.96:5678/socket.io/socket.io.js"></script>
+<script src="http://192.168.1.69:5678/socket.io/socket.io.js"></script>
 {% load staticfiles %}
 <script src="{% static 'js/client.js' %}"></script>
 
 <script>
-  Push.create("Hola Mundo",{
-    body: "GPS UPGCH",
-    icon:"",
-    timeout:"6000"
-  });
+function Notificacion(imei){
+  if(!Push.Permission.GRANTED){
+      Push.Permission.request();
+  }
+  else{
+      Push.create("Vehiculo en movimiento",{
+        body: "GPS UPGCH",
+        icon:"",
+        timeout:"10000",
+        vibrate: [100,100,100],
+        onClick: function()
+        {  
+          $.ajax({
+        data : {'imei':imei},
+        url : '/busqueda_ajax/',
+        type : 'get',
+        success: function(data){
+          if (data != ""){
+            moment().locale('es');
+            moment().format('MMMM Do YYYY, h:mm:ss a');
+
+            var fecha = data[0].fields.date_create;
+            fecha = String(fecha);
+            fecha = fecha.substring(0, 10);
+            var hora = data[0].fields.date_create;
+            hora = String(hora);
+            hora = hora.substring(11, 19);
+            var actividad = fecha;
+            for (var i = 0; i < actividad.length; i++) {
+              actividad = actividad.replace("-", "");
+            }
+            var año = fecha.substring(0,4);
+            var mes = fecha.substring(5,7);
+            var dia = fecha.substring(8,10);
+
+            var h = hora.substring(0,2);
+            var m = hora.substring(3,5);
+            //var tiempo = moment(actividad, "YYYYMMDD").fromNow()
+            var tiempo = moment([año,(mes-1),dia,h,m]).fromNow();
+            var conca = fecha + "," + hora;
+            html = ""; 
+            html += '<h11>LATITUD: '+data[0].fields.latit+'</h11>';
+            html += '<br/>';
+            html += '<br/>';
+            html += '<h11>LONGITUD: '+data[0].fields.longi+'</h11>';
+            html += '<br/>';
+            html += '<br/>';
+            html += '<h11>FECHA: '+ fecha +' </h11>';
+            html += '<br/>';
+            html += '<br/>';
+            html += '<h11>HORA: '+ hora +' </h11>';
+            html += '<br/>';
+            html += '<br/>';
+            html += '<h11>COMBUSTIBLE: '+data[0].fields.combu+' </h11>';
+            html += '<br/>';
+            html += '<br/>';
+            html += '<h11>ACTIVO: '+tiempo+' </h11>';
+            $('#datos').html(html);
+            var lat = data[0].fields.latit;
+            var lon = data[0].fields.longi;
+            lat = (lat*1);
+            lon = (lon*1);
+            initMap(lat,lon, 16);
+            sendimei(data[0].fields.imei);
+          }else{
+            html = ""; 
+            html = '<div></div>';
+            $('#datos').html(html);
+            $('#address').html(html);
+            init();
+            sendimei(imei);
+          }
+        }
+      });
+          this.close();
+        }
+      });
+   }
+}
   var map;
   var markers = [];
   var html = "";
