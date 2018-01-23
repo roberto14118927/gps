@@ -22,6 +22,7 @@ class Gpson(models.Model):
 	imei = models.CharField(max_length=255, blank=True, null=True)
 	latit = models.CharField(max_length=255, blank=True, null=True)
 	longi = models.CharField(max_length=255, blank=True, null=True)
+	status = models.CharField(max_length=255, blank=True, null=True)
 	date_create = models.DateTimeField(default=datetime.date.today)
 
 	def __str__(self):

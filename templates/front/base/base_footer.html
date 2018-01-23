@@ -10,6 +10,11 @@
 <script src="{% static 'js/client.js' %}"></script>
 
 <script>
+  Push.create("Hola Mundo",{
+    body: "GPS UPGCH",
+    icon:"",
+    timeout:"6000"
+  });
   var map;
   var markers = [];
   var html = "";

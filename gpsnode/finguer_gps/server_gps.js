@@ -106,7 +106,7 @@ net.createServer(function(sock) {
                 var imei = arr[2];
                 var id_user = arr[3];
                 var latit = arr[4];
-                var status = arr[5];
+                var status = arr[6];
 
                 latit = String(latit);
                 var inicio = latit.substring(0, 2);
