@@ -26,11 +26,19 @@ var os = require('os');
 const { Pool, Client } = require('pg')
 
 
-const client = new Client({
+/*const client = new Client({
   user: 'postgres',
   host: 'localhost',
   database: 'gpsdb',
   password: '123456',
+  port: 5432,
+});*/
+
+const client = new Client({
+  user: 'gps',
+  host: 'localhost',
+  database: 'gpsdb',
+  password: 'gps123456',
   port: 5432,
 });
 

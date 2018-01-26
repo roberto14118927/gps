@@ -96,12 +96,23 @@ WSGI_APPLICATION = 'gpsupgch.wsgi.application'
     }
 }"""
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
         'NAME' : 'gpsdb',
         'USER': 'postgres',
         'PASSWORD': '123456',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}"""
+
+DATABASES = {
+    'default': {
+        'ENGINE' : 'django.db.backends.postgresql_psycopg2',
+        'NAME' : 'gpsdb',
+        'USER': 'gps',
+        'PASSWORD': 'gps123456',
         'HOST': 'localhost',
         'PORT': '5432'
     }
