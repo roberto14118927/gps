@@ -11,7 +11,7 @@ class Gpsus(models.Model):
 	imei = models.CharField(max_length=255, blank=True, null=True)
 	cmp_nombre = models.CharField(max_length=255, blank=True, null=True)
 	cmp_unidad = models.CharField(max_length=255, blank=True, null=True)
-	date_create = models.DateTimeField(default=datetime.date.today, null=False)
+	date_create = models.DateTimeField(default=datetime.date.today, null=True)
 
 	def __str__(self):
 		return self.imei
@@ -23,7 +23,7 @@ class Gpson(models.Model):
 	latit = models.CharField(max_length=255, blank=True, null=True)
 	longi = models.CharField(max_length=255, blank=True, null=True)
 	status = models.CharField(max_length=255, blank=True, null=True)
-	date_create = models.DateTimeField(default=datetime.date.today, null=False)
+	date_create = models.DateTimeField(default=datetime.date.today, null=True)
 
 	def __str__(self):
 		return self.imei
@@ -34,7 +34,7 @@ class Gpsub(models.Model):
 	latit = models.CharField(max_length=255, blank=True, null=True)
 	longi = models.CharField(max_length=255, blank=True, null=True)
 	combu = models.CharField(max_length=255, blank=True, null=True)
-	date_create = models.DateTimeField(default=datetime.date.today, null=False)
+	date_create = models.DateTimeField(default=datetime.date.today, null=True)
 
 	def __str__(self):
 		return self.imei

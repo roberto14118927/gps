@@ -96,7 +96,7 @@ WSGI_APPLICATION = 'gpsupgch.wsgi.application'
     }
 }"""
 
-"""DATABASES = {
+DATABASES = {
     'default': {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
         'NAME' : 'gpsdb',
@@ -105,9 +105,9 @@ WSGI_APPLICATION = 'gpsupgch.wsgi.application'
         'HOST': 'localhost',
         'PORT': '5432'
     }
-}"""
+}
 
-DATABASES = {
+"""DATABASES = {
     'default': {
         'ENGINE' : 'django.db.backends.postgresql_psycopg2',
         'NAME' : 'gpsdb',
@@ -116,7 +116,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432'
     }
-}
+}"""
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

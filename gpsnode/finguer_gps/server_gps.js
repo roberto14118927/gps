@@ -136,7 +136,8 @@ net.createServer(function(sock) {
         console.log(dataclean)
         arr = dataclean.toString().split(",");
         var veri = arr[1];
-        if (typeof arr[3] !== null) {
+        console.log(arr[3]);
+        if (typeof arr[3] != null) {
             if(veri == "verifica"){
                 var imei = arr[2];
                 var id_user = arr[3];
@@ -227,7 +228,7 @@ net.createServer(function(sock) {
                var dt = new Date();
                 var utcDate = dt.toUTCString();
                 const text = 'INSERT INTO gps_gpsub(imei, latit, longi, combu, date_create) VALUES($1, $2, $3, $4, $5) RETURNING *'
-                const values = [String(imei), String(latitudgps), String(longitudgps),utcDate]
+                const values = [String(imei), String(latitudgps), String(longitudgps),0,utcDate]
                   client.query(text, values, (err, res) => {
                  if (err) {
                    console.log(err.stack)
