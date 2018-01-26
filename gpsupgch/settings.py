@@ -27,7 +27,7 @@ SECRET_KEY = 'i2ph%2cwspu(f#w+uq@tt!5n=fs2h_-%_0ro#8r$rvmrt4jd_c'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['142.44.162.71']
 
 
 # Application definition

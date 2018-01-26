@@ -23,7 +23,19 @@ var mysql = require('mysql');
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 var os = require('os');
-var pg = require('pg');
+const { Pool, Client } = require('pg')
+
+
+const client = new Client({
+  user: 'postgres',
+  host: 'localhost',
+  database: 'gpsdb',
+  password: '123456',
+  port: 5432,
+});
+
+client.connect()
+//var pg = require('pg');
 
 //DB Connection to String
 //var connect = "postgres://postgres:123456@localhost/gpsdb"
@@ -51,12 +63,12 @@ var global_imei="";
 var sockets = [];
 var web_sockets = [];
 
-var conmysql= mysql.createConnection({
+/*var conmysql= mysql.createConnection({
   host: "localhost",
   user: "root",
   password: "root",
   database: "gpsdb"
-});
+});*/
 
 
 
@@ -94,6 +106,17 @@ io.on('error',function(err){
 
 server.listen(PORT, function(){
   console.log("Servidor corriendo puerto: " + PORT )
+  /*var dt = new Date();
+  var utcDate = dt.toUTCString();
+  const text = 'INSERT INTO gps_gpsus(id_user, imei, cmp_nombre, cmp_unidad, date_create) VALUES($1, $2, $3, $4, $5) RETURNING *'
+  const values = ['3', '000000000', 'Roberto Eduardo Guzman Ruiz', 'Unidad1', utcDate]
+    client.query(text, values, (err, res) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      console.log(res.rows[0])
+    }
+  })*/
 });
 
 net.createServer(function(sock) {
@@ -134,8 +157,19 @@ net.createServer(function(sock) {
                 longitudgps = String(longitudgps);
                 longitudgps = longitudgps.substring(0, 10);
                 longitudgps = (longitudgps*-1);
-                
-                var records1;
+
+                var dt = new Date();
+                var utcDate = dt.toUTCString();
+                const text = 'INSERT INTO gps_gpson(imei, id_user_id, latit, longi, status, date_create) VALUES($1, $2, $3, $4, $5, $6) RETURNING *'
+                const values = [imei, id_user, latitudgps, longitudgps, status, utcDate]
+                  client.query(text, values, (err, res) => {
+                 if (err) {
+                   console.log(err.stack)
+                 } else {
+                   console.log(res.rows[0])
+                   }
+               });
+                /*var records1;
                  inserta = [
                   [imei, id_user, latitudgps, longitudgps, status]
                 ];
@@ -145,7 +179,7 @@ net.createServer(function(sock) {
                     io.emit('notificacion', {
                           imei:imei
                     });   
-                  });
+                  });*/
 
             }else{
               var imei = arr[2];
@@ -176,12 +210,23 @@ net.createServer(function(sock) {
               longitudgps = (longitudgps*-1);
               //longitudgps = String(longitudgps);
               //--------------------------------------------------------------
-              insertaubi = [
+              /*insertaubi = [
                   [String(imei), String(latitudgps), String(longitudgps), 0]
               ];    
               conmysql.query('INSERT INTO `gps_gpsub` (`imei`, `latit`, `longi`, `combu`) VALUES ? ',[insertaubi], function (err, result) {
                  if (err) throw err;
-               });  
+               });*/
+               var dt = new Date();
+                var utcDate = dt.toUTCString();
+                const text = 'INSERT INTO gps_gpsub(imei, latit, longi, combu, date_create) VALUES($1, $2, $3, $4, $5) RETURNING *'
+                const values = [String(imei), String(latitudgps), String(longitudgps),utcDate]
+                  client.query(text, values, (err, res) => {
+                 if (err) {
+                   console.log(err.stack)
+                 } else {
+                   console.log(res.rows[0])
+                   }
+               });
               io.emit('datosgps', {
                     latit:latitudgps,
                     longi:longitudgps,
